@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pl">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pomodoro by Tubaris</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        button {
+            padding: 15px 20px;
+            font-size: 1rem;
+            background-color: #fff;
+            border: 2px solid rgb(18, 168, 31);
+            border-radius: 50px;
+            outline: none;
+            box-shadow: inset 0px 0px 10px green;
+        }
+
+        span {
+            position: absolute;
+            top: 5rem;
+            left: 1rem;
+            font-size: 2rem;
+            line-height: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="startBtn" onclick="startCount()">Start</button>
+    <button id="stopBtn" onclick="stopCount()">Pause</button>
+    <button id="resetBtn" onclick="resetCount()">Reset</button>
+
+    <span id="mySpan">--:--</span>
+    </span>
+
+    <script>
+
+        let getStartBtn = document.getElementById("startBtn");
+        let getStopBtn = document.getElementById("stopBtn");
+        let getMySpan = document.getElementById("mySpan");
+
+        let timeLeft = 5;
+        let pauseTimeLeft = 2;
+
+        let startTimer = "";
+        let pauseTimer = "";
+
+        function timerCount() {
+            pauseTimeLeft = 2;
+            timeLeft--;
+            let mins = Math.floor(timeLeft / 60);
+            let secs = Math.floor(timeLeft % 60);
+            let minsWithZero = (mins < 10) ? "0" + mins : mins;
+            let secsWithZero = (secs < 10) ? "0" + secs : secs;
+            let colon = (timeLeft % 2 == 0) ? ":" : " ";
+            getMySpan.textContent = minsWithZero + colon + secsWithZero + " - czas pracy";
+            getMySpan.style.color = "red";
+            if (timeLeft == 0) {
+                pauseTimer = setInterval(pauseCount, 1000);
+                clearInterval(startTimer);
+            }
+        }
+
+        function pauseCount() {
+            timeLeft = 5;
+            pauseTimeLeft--
+            let mins = Math.floor(pauseTimeLeft / 60);
+            let secs = Math.floor(pauseTimeLeft % 60);
+            let minsWithZero = (mins < 10) ? "0" + mins : mins;
+            let secsWithZero = (secs < 10) ? "0" + secs : secs;
+            let colon = (pauseTimeLeft % 2 == 0) ? ":" : " ";
+            getMySpan.textContent = minsWithZero + colon + secsWithZero + " - czas przerwy";
+            getMySpan.style.color = "green";
+            if (pauseTimeLeft == 0) {
+                startTimer = setInterval(timerCount, 1000);
+                clearInterval(pauseTimer);
+            }
+        }
+
+        function startCount() {
+            if (pauseTimer != "") {
+                pauseTimer = setInterval(pauseCount, 1000);
+            } else {
+                startTimer = setInterval(timerCount, 1000);
+            }
+            getStartBtn.disabled = true;
+            getStopBtn.disabled = false;
+        }
+
+        function resetCount() {
+            clearInterval(startTimer);
+            clearInterval(pauseTimer);
+            timeLeft = 5;
+            pauseTimeLeft = 2;
+            getStopBtn.disabled = false;
+            getStartBtn.disabled = false;
+            getMySpan.textContent = "--:--";
+        }
+
+        function stopCount() {
+            clearInterval(startTimer);
+            clearInterval(pauseTimer);
+            if (getStartBtn.disabled == true) {
+                getStopBtn.disabled = true;
+            }
+            getStartBtn.disabled = false;
+        }
+
+    </script>
+</body>
+
+</html>
